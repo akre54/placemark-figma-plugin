@@ -34,9 +34,15 @@ leafletMap.on("moveend", () => {
   const center = leafletMap.getCenter();
   const zoom = leafletMap.getZoom();
 
-  if (zoom < 12) {
+  if (zoom < 10) {
     message.textContent =
-      "Recommended to zoom in. This tool does not work for national-level data";
+      "Regional view - showing major roads and landmarks only";
+  } else if (zoom < 12) {
+    message.textContent =
+      "City view - showing primary infrastructure (may take 15-30s)";
+  } else if (zoom < 14) {
+    message.textContent =
+      "Neighborhood view - more detail visible";
   } else {
     message.textContent = "Search or drag to place the map, then click render.";
   }
@@ -160,6 +166,7 @@ captureButton.onclick = () => {
       pluginMessage: {
         type: "render-map",
         bbox: leafletMap.getBounds().toBBoxString(),
+        zoom: leafletMap.getZoom(),
         overlays,
       },
     },

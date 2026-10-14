@@ -150,7 +150,7 @@ figma.ui.onmessage = (msg) => {
       frame.setPluginData(ATTACHED_KEY, JSON.stringify(attached));
       render(
         msg.bbox.split(",").map((b: string) => parseFloat(b)),
-        { overlays: msg.overlays },
+        { overlays: msg.overlays, zoom: msg.zoom || 15 },
       )
         .catch((e) => {
           progress(e.message, { error: true });
@@ -191,6 +191,7 @@ async function getSettings(): Promise<Settings> {
 
 interface Options {
   overlays?: any[];
+  zoom?: number;
 }
 
 async function render(bbox: BBOX, options: Options = {}) {
@@ -223,7 +224,7 @@ async function render(bbox: BBOX, options: Options = {}) {
 
   progress("Requesting data");
 
-  const j = await request(bbox);
+  const j = await request(bbox, options.zoom || 15);
   progress("Building network");
 
   const grouped = buildNetwork(j);
